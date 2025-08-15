@@ -13,33 +13,7 @@
  * limitations under the License.
  */
 
-import { noContextMenu, shadow, stopEvent } from "pdfjs-dist/build/pdf.mjs";
-
-function getRGB(color) {
-  if (color.startsWith("#")) {
-    const colorRGB = parseInt(color.slice(1), 16);
-    return [
-      (colorRGB & 0xff0000) >> 16,
-      (colorRGB & 0x00ff00) >> 8,
-      colorRGB & 0x0000ff,
-    ];
-  }
-  if (color.startsWith("rgb(")) {
-    return color
-      .slice(4, -1)
-      .split(",")
-      .map(x => parseInt(x));
-  }
-  if (color.startsWith("rgba(")) {
-    return color
-      .slice(5, -1)
-      .split(",")
-      .map(x => parseInt(x))
-      .slice(0, 3);
-  }
-  warn(`Not a valid color format: "${color}"`);
-  return [0, 0, 0];
-}
+import { getRGB, noContextMenu, shadow, stopEvent } from "pdfjs-dist/build/pdf.mjs";
 
 class CommentManager {
   #actions;
@@ -203,6 +177,10 @@ class CommentManager {
     }
   }
 
+  #renderActionsButton(visible) {
+    this.#actions.classList.toggle("hidden", !visible);
+  }
+
   #makeMenu() {
     this.#actions.addEventListener("click", e => {
       const closeMenu = this.#closeMenu.bind(this);
@@ -301,8 +279,10 @@ class CommentManager {
     );
     this.#commentText = text || "";
     if (!text) {
+      this.#renderActionsButton(false);
       this.#edit();
     } else {
+      this.#renderActionsButton(true);
       this.#setText(text);
       this.#textInput.classList.toggle("hidden", true);
       this.#textView.classList.toggle("hidden", false);
@@ -378,7 +358,7 @@ class CommentManager {
 
     textInput.classList.toggle("hidden", false);
     textView.classList.toggle("hidden", true);
-    this.#editMenuItem.disabled = this.#deleteMenuItem.disabled = true;
+    this.#editMenuItem.disabled = true;
     setTimeout(() => textInput.focus(), 0);
   }
 

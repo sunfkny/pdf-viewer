@@ -71,6 +71,7 @@ import { LinkTarget, PDFLinkService } from "./pdf_link_service.js";
 import { AltTextManager } from "./alt_text_manager.js";
 import { AnnotationEditorParams } from "./annotation_editor_params.js";
 import { CaretBrowsingMode } from "./caret_browsing.js";
+import { CommentManager } from "./comment_manager.js";
 import { DownloadManager } from "./download_manager.js";
 import { EditorUndoBar } from "./editor_undo_bar.js";
 import { OverlayManager } from "./overlay_manager.js";
@@ -299,7 +300,7 @@ const PDFViewerApplication = {
         GlobalWorkerOptions.workerSrc ||= AppOptions.get("workerSrc");
 
         typeof PDFJSDev === "undefined" // eslint-disable-line no-unused-expressions
-          ? await import("https://registry.npmmirror.com/pdfjs-dist/5.3.93/files/build/pdf.worker.mjs")
+          ? await import("./pdf.worker.js")
           : await __raw_import__(PDFWorker.workerSrc);
 
         // Ensure that the "fake" worker won't be ignored.
@@ -374,6 +375,9 @@ const PDFViewerApplication = {
         spreadModeOnLoad: x => parseInt(x),
         supportsCaretBrowsingMode: x => x === "true",
         viewerCssTheme: x => parseInt(x),
+        forcePageColors: x => x === "true",
+        pageColorsBackground: x => x,
+        pageColorsForeground: x => x,
       });
     }
 
@@ -484,6 +488,10 @@ const PDFViewerApplication = {
             eventBus
           )
         : null;
+    const commentManager =
+      AppOptions.get("enableComment") && appConfig.editCommentDialog
+        ? new CommentManager(appConfig.editCommentDialog, overlayManager)
+        : null;
 
     const enableHWA = AppOptions.get("enableHWA"),
       maxCanvasPixels = AppOptions.get("maxCanvasPixels"),
@@ -498,6 +506,7 @@ const PDFViewerApplication = {
       linkService,
       downloadManager,
       altTextManager,
+      commentManager,
       signatureManager,
       editorUndoBar: this.editorUndoBar,
       findController,

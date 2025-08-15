@@ -227,6 +227,8 @@ function getViewerConfiguration() {
       saveContainer: document.getElementById("addSignatureSaveContainer"),
       saveCheckbox: document.getElementById("addSignatureSaveCheckbox"),
       errorBar: document.getElementById("addSignatureError"),
+      errorTitle: document.getElementById("addSignatureErrorTitle"),
+      errorDescription: document.getElementById("addSignatureErrorDescription"),
       errorCloseButton: document.getElementById("addSignatureErrorCloseButton"),
       cancelButton: document.getElementById("addSignatureCancelButton"),
       addButton: document.getElementById("addSignatureAddButton"),
@@ -259,6 +261,19 @@ function getViewerConfiguration() {
       message: document.getElementById("editorUndoBarMessage"),
       undoButton: document.getElementById("editorUndoBarUndoButton"),
       closeButton: document.getElementById("editorUndoBarCloseButton"),
+    },
+    editCommentDialog: {
+      dialog: document.getElementById("commentManagerDialog"),
+      toolbar: document.getElementById("commentManagerToolbar"),
+      actions: document.getElementById("commentActionsButton"),
+      menu: document.getElementById("commentActionsMenu"),
+      editMenuItem: document.getElementById("commentActionsEditButton"),
+      deleteMenuItem: document.getElementById("commentActionsDeleteButton"),
+      closeButton: document.getElementById("commentCloseButton"),
+      textInput: document.getElementById("commentManagerTextInput"),
+      textView: document.getElementById("commentManagerTextView"),
+      cancelButton: document.getElementById("commentManagerCancelButton"),
+      saveButton: document.getElementById("commentManagerSaveButton"),
     },
   };
 }

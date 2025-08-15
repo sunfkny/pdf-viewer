@@ -218,6 +218,11 @@ const defaultOptions = {
     value: true,
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
   },
+  enableComment: {
+    /** @type {boolean} */
+    value: typeof PDFJSDev === "undefined" || PDFJSDev.test("TESTING"),
+    kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
+  },
   enableDetailCanvas: {
     /** @type {boolean} */
     value: true,
@@ -281,7 +286,9 @@ const defaultOptions = {
   },
   highlightEditorColors: {
     /** @type {string} */
-    value: "yellow=#FFFF98,green=#53FFBC,blue=#80EBFF,pink=#FFCBE6,red=#FF4F5F",
+    value:
+      "yellow=#FFFF98,green=#53FFBC,blue=#80EBFF,pink=#FFCBE6,red=#FF4F5F," +
+      "yellow_HCM=#FFFFCC,green_HCM=#53FFBC,blue_HCM=#80EBFF,pink_HCM=#F6B8FF,red_HCM=#C50043",
     kind: OptionKind.VIEWER + OptionKind.PREFERENCE,
   },
   historyUpdateUrl: {
@@ -496,7 +503,7 @@ const defaultOptions = {
     value:
       typeof PDFJSDev !== "undefined" && PDFJSDev.test("MOZCENTRAL")
         ? "resource://pdf.js/web/wasm/"
-        : "/wasm/",
+        : "./wasm/",
     kind: OptionKind.API,
   },
 
@@ -513,7 +520,7 @@ const defaultOptions = {
     value:
       // eslint-disable-next-line no-nested-ternary
       typeof PDFJSDev === "undefined"
-        ? "https://registry.npmmirror.com/pdfjs-dist/5.3.93/files/build/pdf.worker.mjs"
+        ? "./pdf.worker.js"
         : PDFJSDev.test("MOZCENTRAL")
           ? "resource://pdf.js/build/pdf.worker.mjs"
           : "../build/pdf.worker.mjs",
