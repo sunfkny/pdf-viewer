@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 export default defineConfig({
+  base: "/pdf-viewer/",
   build: {
     rollupOptions: {
       output: {
@@ -7,7 +8,7 @@ export default defineConfig({
           if (id.includes("node_modules")) {
             return "vendor";
           }
-          return '[name].[ext]';
+          return "[name].[ext]";
         },
       },
     },
