@@ -6,7 +6,12 @@ import shutil
 import subprocess
 
 PDFJS_DIR = pathlib.Path("./pdf.js")
-PDFJS_VERSION = "v5.3.93"
+package_json = json.loads(pathlib.Path("package.json").read_text())
+PDFJS_VERSION = package_json["dependencies"]["pdfjs-dist"]
+assert re.match(r"^\d+\.\d+\.\d+$", PDFJS_VERSION), (
+    "pdfjs-dist version is not exactly specified in package.json"
+)
+
 SPARSE_DIRS = ["web", "l10n", "external"]
 
 if not PDFJS_DIR.exists():
@@ -29,7 +34,7 @@ subprocess.run(
     ["git", "sparse-checkout", "set", *SPARSE_DIRS], cwd=PDFJS_DIR, check=True
 )
 subprocess.run(["git", "fetch", "--tags"], cwd=PDFJS_DIR, check=True)
-subprocess.run(["git", "checkout", PDFJS_VERSION], cwd=PDFJS_DIR, check=True)
+subprocess.run(["git", "checkout", f"v{PDFJS_VERSION}"], cwd=PDFJS_DIR, check=True)
 
 index_html = (
     pathlib.Path("./pdf.js/web/viewer.html")
@@ -96,7 +101,7 @@ def replace_text(text: str):
         )
         .replace(
             'await import("pdfjs/pdf.worker.js")',
-            'await import("https://registry.npmmirror.com/pdfjs-dist/5.3.93/files/build/pdf.worker.mjs")',
+            f'await import("https://registry.npmmirror.com/pdfjs-dist/{PDFJS_VERSION}/files/build/pdf.worker.mjs")',
         )
         .replace(
             "if (version !== viewerVersion) {",
