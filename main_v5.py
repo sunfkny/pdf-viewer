@@ -5,14 +5,11 @@ import re
 import shutil
 import subprocess
 
+PDFJS_VERSION = "5.4.54"
 PDFJS_DIR = pathlib.Path("./pdf.js")
-package_json = json.loads(pathlib.Path("package.json").read_text())
-PDFJS_VERSION = package_json["dependencies"]["pdfjs-dist"]
-assert re.match(r"^\d+\.\d+\.\d+$", PDFJS_VERSION), (
-    "pdfjs-dist version is not exactly specified in package.json"
-)
-
 SPARSE_DIRS = ["web", "l10n", "external"]
+
+subprocess.run(["pnpm", "install", f"pdfjs-dist@{PDFJS_VERSION}"], shell=True)
 
 if not PDFJS_DIR.exists():
     subprocess.run(
@@ -101,7 +98,7 @@ def replace_text(text: str):
         )
         .replace(
             'await import("pdfjs/pdf.worker.js")',
-            f'await import("https://registry.npmmirror.com/pdfjs-dist/{PDFJS_VERSION}/files/build/pdf.worker.mjs")',
+            'await import("./pdf.worker.js")',
         )
         .replace(
             "if (version !== viewerVersion) {",
@@ -125,7 +122,15 @@ def replace_text(text: str):
         )
         .replace(
             '"../src/pdf.worker.js"',
-            '"https://registry.npmmirror.com/pdfjs-dist/5.3.93/files/build/pdf.worker.mjs"',
+            '"./pdf.worker.js"',
+        )
+        .replace(
+            'from "pdfjs-dist/build/pdf.js"',
+            'from "pdfjs-dist/build/pdf.mjs"',
+        )
+        .replace(
+            ': "/wasm/",',
+            ': "./wasm/",',
         )
     )
 
@@ -143,6 +148,7 @@ for f in pathlib.Path("./pdf.js/web").glob("*.css"):
     )
 
 shutil.copytree("./pdf.js/web/images", "./public/images", dirs_exist_ok=True)
+shutil.rmtree("./public/locale")
 shutil.copytree("./pdf.js/l10n", "./public/locale", dirs_exist_ok=True)
 locale_data = {}
 for f in pathlib.Path("./pdf.js/l10n").glob("*/viewer.ftl"):
@@ -162,5 +168,6 @@ for f in itertools.chain(
     PDFJS_DIR.joinpath("external/qcms").glob("LICENSE_*"),
 ):
     shutil.copy(f, wasm_dir.joinpath(f.name))
+shutil.copy("./node_modules/pdfjs-dist/build/pdf.worker.mjs", "./src/pdf.worker.js")
 
 subprocess.run(["pnpx", "prettier", "./index.html", "-w"], shell=True)

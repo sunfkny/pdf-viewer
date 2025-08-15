@@ -10,6 +10,7 @@
     "deploy": "gh-pages -d dist --no-history"
   },
   "devDependencies": {
+    "@vitejs/plugin-legacy": "^7.2.1",
     "gh-pages": "6.1.0",
     "typescript": "~5.8.3",
     "vite": "^7.0.4"
@@ -18,6 +19,7 @@
   "dependencies": {
     "@fluent/bundle": "^0.19.1",
     "@fluent/dom": "^0.10.2",
-    "pdfjs-dist": "5.3.93"
+    "pdfjs-dist": "5.4.54",
+    "pdfjs-web": "^0.0.151"
   }
 }

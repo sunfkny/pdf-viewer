@@ -13,5 +13,7 @@ pdf.js viewer but use vite
 ## Generate
 
 ```bash
-python main.py
+python main_v5.py
+# OR
+python main_v2.py
 ```

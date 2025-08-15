@@ -1,6 +1,13 @@
 import { defineConfig } from "vite";
+import legacy from "@vitejs/plugin-legacy";
+
 export default defineConfig({
   base: "/pdf-viewer/",
+  plugins: [
+    legacy({
+      targets: ["defaults", "not IE 11"],
+    }),
+  ],
   build: {
     rollupOptions: {
       output: {
