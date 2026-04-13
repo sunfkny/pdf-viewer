@@ -1,5 +1,4 @@
 import itertools
-import json
 import pathlib
 import re
 import shutil
@@ -79,8 +78,12 @@ def replace_imports(text: str):
 def replace_text(text: str):
     return (
         text.replace(
-            "../web/",
-            "/",
+            "../web/wasm/",
+            "/wasm/",
+        )
+        .replace(
+            "../external/bcmaps/",
+            "./cmaps/",
         )
         .replace(
             'await import("pdfjs/pdf.worker.js")',
@@ -146,7 +149,7 @@ for f in pathlib.Path("./pdf.js/web").glob("*.css"):
     )
 
 shutil.copytree("./pdf.js/web/images", "./public/images", dirs_exist_ok=True)
-shutil.rmtree("./public/locale")
+shutil.rmtree("./public/locale", ignore_errors=True)
 shutil.copytree("./pdf.js/l10n", "./public/locale", dirs_exist_ok=True)
 locale_data = []
 for f in pathlib.Path("./pdf.js/l10n").glob("*/viewer.properties"):
@@ -172,6 +175,13 @@ for f in itertools.chain(
     if not f.exists():
         continue
     shutil.copy(f, wasm_dir.joinpath(f.name))
+
+bcmaps_dir = pathlib.Path("public/cmaps")
+bcmaps_dir.mkdir(parents=True, exist_ok=True)
+for f in PDFJS_DIR.joinpath("external/bcmaps").glob("*.bcmap"):
+    if not f.exists():
+        continue
+    shutil.copy(f, bcmaps_dir.joinpath(f.name))
 
 webL10n = PDFJS_DIR.joinpath("external/webL10n")
 if webL10n.exists():

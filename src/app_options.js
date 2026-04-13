@@ -385,10 +385,10 @@ const defaultOptions = {
     value:
       // eslint-disable-next-line no-nested-ternary
       typeof PDFJSDev === "undefined"
-        ? "../external/bcmaps/"
+        ? "./cmaps/"
         : PDFJSDev.test("MOZCENTRAL")
           ? "resource://pdf.js/web/cmaps/"
-          : "/cmaps/",
+          : "../web/cmaps/",
     kind: OptionKind.API,
   },
   disableAutoFetch: {
@@ -445,7 +445,7 @@ const defaultOptions = {
         ? "../external/iccs/"
         : PDFJSDev.test("MOZCENTRAL")
           ? "resource://pdf.js/web/iccs/"
-          : "/iccs/",
+          : "../web/iccs/",
     kind: OptionKind.API,
   },
   isEvalSupported: {
@@ -476,7 +476,7 @@ const defaultOptions = {
         ? "../external/standard_fonts/"
         : PDFJSDev.test("MOZCENTRAL")
           ? "resource://pdf.js/web/standard_fonts/"
-          : "/standard_fonts/",
+          : "../web/standard_fonts/",
     kind: OptionKind.API,
   },
   useSystemFonts: {

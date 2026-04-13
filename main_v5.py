@@ -93,8 +93,12 @@ def replace_imports(text: str):
 def replace_text(text: str):
     return (
         text.replace(
-            "../web/",
-            "/",
+            "../web/wasm/",
+            "/wasm/",
+        )
+        .replace(
+            "../external/bcmaps/",
+            "./cmaps/",
         )
         .replace(
             'await import("pdfjs/pdf.worker.js")',
@@ -148,7 +152,7 @@ for f in pathlib.Path("./pdf.js/web").glob("*.css"):
     )
 
 shutil.copytree("./pdf.js/web/images", "./public/images", dirs_exist_ok=True)
-shutil.rmtree("./public/locale")
+shutil.rmtree("./public/locale", ignore_errors=True)
 shutil.copytree("./pdf.js/l10n", "./public/locale", dirs_exist_ok=True)
 locale_data = {}
 for f in pathlib.Path("./pdf.js/l10n").glob("*/viewer.ftl"):
@@ -168,6 +172,14 @@ for f in itertools.chain(
     PDFJS_DIR.joinpath("external/qcms").glob("LICENSE_*"),
 ):
     shutil.copy(f, wasm_dir.joinpath(f.name))
+
+bcmaps_dir = pathlib.Path("public/cmaps")
+bcmaps_dir.mkdir(parents=True, exist_ok=True)
+for f in PDFJS_DIR.joinpath("external/bcmaps").glob("*.bcmap"):
+    if not f.exists():
+        continue
+    shutil.copy(f, bcmaps_dir.joinpath(f.name))
+
 shutil.copy("./node_modules/pdfjs-dist/build/pdf.worker.mjs", "./src/pdf.worker.js")
 
 subprocess.run(["pnpx", "prettier", "./index.html", "-w"], shell=True)
